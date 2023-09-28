@@ -1,4 +1,5 @@
-﻿class Prac
+using System;
+class Prac
 {
     static void Main()
     {
