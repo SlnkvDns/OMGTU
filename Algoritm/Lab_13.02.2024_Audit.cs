@@ -1,8 +1,6 @@
-﻿using System;
+using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ConsoleApplication25
 {
@@ -19,21 +17,50 @@ namespace ConsoleApplication25
     {
         public void Show()
         {
-            char choice = Convert.ToChar(Console.ReadLine());
-            while (choice != '8') 
+            string choice;
+            do
             {
-                Console.WriteLine("1) Создать БД\n 2) Добавить аудиторию в БД\n3) Изменить запись по номеру аудитории\n4) Выбрать по количеству мест\n5) Выбрать по наличию компьютеров\n6) Выбрать по наличию проектора\n7) Выбрать по этажу\n8) Выход");
-                switch (choice)
+                Console.WriteLine("1) Создать БД\n2) Добавить аудиторию в БД\n3) Изменить запись по номеру аудитории\n4) Выбрать по количеству мест\n5) Выбрать по наличию компьютеров\n6) Выбрать по наличию проектора\n7) Выбрать по этажу\n8) Посмотреть информацию об аудитории\n9) Выход");
+                choice = Console.ReadLine();
+                if (String.IsNullOrEmpty(Convert.ToString(choice)))
+                    Console.WriteLine("Неверное значение\n");
+                else
                 {
-                    case '1':
-                        CreateDB();
-                        break;
-                    case '2':
-                        AddAudit();
-                        break;
+                    switch (choice)
+                    {
+                        case "1":
+                            Auditoriya.CreateDB();
+                            break;
+                        case "2":
+                            Auditoriya.AddAudit();
+                            break;
+                        case "3":
+                            Auditoriya.Edit();
+                            break;
+                        case "4":
+                            Auditoriya.KolMest();
+                            break;
+                        case "5":
+                            Auditoriya.AvailabilityOfComputer();
+                            break;
+                        case "6":
+                            Auditoriya.AvailabilityOfProector();
+                            break;
+                        case "7":
+                            Auditoriya.SelectionByFloor();
+                            break;
+                        case "8":
+                            Auditoriya.PrintInf();
+                            break;
+                        case "9":
+                            break;
+                        default:
+                            Console.WriteLine("Неверное значение\n");
+                            break;
+                    }
                 }
-                choice = Convert.ToChar(Console.ReadLine());
             }
+            while (choice != "9");
 
         }
     }
@@ -56,73 +83,302 @@ namespace ConsoleApplication25
             this.proector = proector;
         }
 
-        public void Edit()
+        // Редактирование аудитории
+        static public void Edit()
         {
-            Console.WriteLine("Что изменить:\n1) Количество мест\n2) Наличие компьютеров\n3) Наличие проектора");
-            int choice = int.Parse(Console.ReadLine());
-            if (choice == 1 || choice == 2 || choice == 3)
+            if (isCreated)
             {
-                if (choice == 1)
+                Console.Write("Введите номер аудитории: ");
+                string nomer = Console.ReadLine();
+                if (ReturnAuditoriya(nomer) != null)
                 {
-                    Console.Write("Введите новое значение: ");
-                    mesta = int.Parse(Console.ReadLine());
-                }
-                else if (choice == 2)
-                {
-                    Console.Write("1) Компьютеры есть\n2) Компьютеров нет");
-                    int choiceComp = int.Parse(Console.ReadLine());
-                    if (choiceComp == 1 || choiceComp == 2)
+                    Auditoriya aud = ReturnAuditoriya(nomer);
+                    Console.WriteLine("Что изменить:\n1) Количество мест\n2) Наличие компьютеров\n3) Наличие проектора");
+                    string choice = Console.ReadLine();
+                    if (!String.IsNullOrEmpty(choice) && (choice == "1" || choice == "2" || choice == "3"))
                     {
-                        if (choiceComp == 1)
-                            comp = true;
-                        else
-                            comp = false;
+                        if (choice == "1")
+                        {
+                            Console.Write("Введите новое значение: ");
+                            string newMest = Console.ReadLine();
+                            if (!String.IsNullOrEmpty(newMest) && CheckNumber(newMest))
+                            {
+                                aud.mesta = int.Parse(newMest);
+                                Console.WriteLine("Изменения внесены\n");
+                            }
+                            else
+                                Console.WriteLine("Неверное значение\n");
+                        }
+                        else if (choice == "2")
+                        {
+                            Console.Write("Есть ли компьютеры? y/n: ");
+                            string choiceComp = Console.ReadLine();
+                            Console.WriteLine();
+                            if (choiceComp == "y" || choiceComp == "n")
+                            {
+                                if (choiceComp == "y")
+                                    aud.comp = true;
+                                else
+                                    aud.comp = false;
+                                Console.WriteLine("Изменения внесены\n");
+                            }
+                            else
+                                Console.WriteLine("Неверное значение\n");
+                        }
+                        else if (choice == "3")
+                        {
+                            Console.Write("Есть ли проектор? y/n: ");
+                            string choiceProector = Console.ReadLine();
+                            Console.WriteLine();
+                            if (choiceProector == "y" || choiceProector == "n")
+                            {
+                                if (choiceProector == "y")
+                                    aud.proector = true;
+                                else
+                                    aud.proector = false;
+                                Console.WriteLine("Изменения внесены\n");
+                            }
+                            else
+                                Console.WriteLine("Неверное значение\n");
+                        }
                     }
                     else
-                        Console.WriteLine("Неверное значение");
+                        Console.WriteLine("Невероное значение\n");
                 }
-                else if (choice == 3)
-                {
-                    Console.Write("1) Проектор есть\n2) Проектора нет");
-                    int choiceProector = int.Parse(Console.ReadLine());
-                    if (choiceProector == 1 || choiceProector == 2)
-                    {
-                        if (choiceProector == 1)
-                            proector = true;
-                        else
-                            proector = false;
-                    }
-                    else
-                        Console.WriteLine("Неверное значение");
-                }
+                else Console.WriteLine("Аудитории с таким номером нет в базе данных\n");
             }
             else
-                Console.WriteLine("Невероное значение");
+                Console.WriteLine("База данных ещё не создана\n");
         }
 
-        public bool Kolmest(int kol)
+        // Выборка по количеству мест
+        static public void KolMest()
         {
-            if (kol <= mesta) return true;
-            return false;
-        }
-        public bool Floor(string floor)
-        {
-            if (floor == Convert.ToString(nomer[0])) return true;
-            return false;
+            if (isCreated)
+            {
+                List<Auditoriya> a = new List<Auditoriya>();
+                Console.Write("Введите количество мест: ");
+                string m = Console.ReadLine();
+                if (!String.IsNullOrEmpty(m) && CheckNumber(m))
+                {
+                    foreach (Auditoriya aud in auditoriya)
+                        if (aud.mesta >= Convert.ToInt32(m))
+                            a.Add(aud);
+                    if (a.Count != 0)
+                    {
+                        Console.Write("Подходящие аудитории: ");
+                        foreach (Auditoriya aud in a)
+                            Console.Write(aud.nomer + " ");
+                        Console.WriteLine("\n");
+                    }
+                    else
+                        Console.WriteLine("Нет подходящих аудиторий\n");
+                }
+                else
+                    Console.WriteLine("Неверное значение\n");
+            }
+            else
+                Console.WriteLine("База данных ещё не создана\n");
         }
 
-        public void CreateDB()
+        // Выборка по наличию компьютеров
+        static public void AvailabilityOfComputer()
         {
-            auditoriya = new List<Auditoriya>();
-            isCreated = true;
+            if (isCreated)
+            {
+                List<Auditoriya> a = new List<Auditoriya>();
+                foreach (Auditoriya aud in auditoriya)
+                    if (aud.comp)
+                        a.Add(aud);
+                if (a.Count != 0)
+                {
+                    Console.Write("Подходящие аудитории: ");
+                    foreach (Auditoriya aud in a)
+                        Console.Write(aud.nomer + " ");
+                    Console.WriteLine("\n");
+                }
+                else
+                    Console.WriteLine("Нет подходящих аудиторий\n");
+            }
+            else
+                Console.WriteLine("База данных ещё не создана\n");
+        }
+        
+        // Выборка по наличию проектора
+        static public void AvailabilityOfProector()
+        {
+            if (isCreated)
+            {
+                List<Auditoriya> a = new List<Auditoriya>();
+                foreach (Auditoriya aud in auditoriya)
+                    if (aud.proector)
+                        a.Add(aud);
+                if (a.Count != 0)
+                {
+                    Console.Write("Подходящие аудитории: ");
+                    foreach (Auditoriya aud in a)
+                        Console.Write(aud.nomer + " ");
+                    Console.WriteLine("\n");
+                }
+                else
+                    Console.WriteLine("Нет подходящих аудиторий\n");
+            }
+            else
+                Console.WriteLine("База данных ещё не создана\n");
         }
 
-        public void AddAudit()
+        // Выборка по этажу
+        static public void SelectionByFloor()
         {
-            Console.Write("Введите номер аудитории: ");
-            int nomer = int.Parse(Console.ReadLine());
-            auditoriya.Add(newAud);
+            if (isCreated)
+            {
+                Console.Write("Введите этаж (1-7): ");
+                string floor = Console.ReadLine();
+                if (!String.IsNullOrEmpty (floor) && (new string[] {"1", "2", "3", "4", "5", "6", "7" }).Contains(floor))
+                {
+                    List<Auditoriya> a = new List<Auditoriya>();
+                    foreach (Auditoriya aud in auditoriya)
+                        if (aud.nomer[0] == Convert.ToChar(floor))
+                            a.Add(aud);
+                    if (a.Count != 0)
+                    {
+                        Console.Write("Подходящие аудитории: ");
+                        foreach (Auditoriya aud in a)
+                            Console.Write(aud.nomer + " ");
+                        Console.WriteLine("\n");
+                    }
+                    else
+                        Console.WriteLine("Нет подходящих аудиторий\n");
+                }
+                else
+                    Console.WriteLine("Неверый этаж\n");
+            }
+            else
+                Console.WriteLine("База данных ещё не создана\n");
+        }
+        
+        // Создание базы данных
+        static public void CreateDB()
+        {
+            if (!isCreated)
+            {
+                auditoriya = new List<Auditoriya>();
+                isCreated = true;
+                Console.WriteLine("База данных создана\n");
+            }
+            else
+                Console.WriteLine("База данных уже создана\n");
         }
 
+        // Добавление аудитории
+        static public void AddAudit()
+        {
+            if (isCreated)
+            {
+                Console.Write("Введите номер аудитории: ");
+                string nomer = Console.ReadLine();
+                if (!String.IsNullOrEmpty(nomer) && IsCorrectNomer(nomer) && nomer[0] != '0')
+                {
+                    if (ReturnAuditoriya(nomer) == null)
+                    {
+                        Console.Write("Введите количество мест: ");
+                        string mesta = Console.ReadLine();
+                        if (!String.IsNullOrEmpty(mesta) && CheckNumber(mesta))
+                        {
+                            bool comp = false;
+                            Console.Write("Имеются ли компьютеры y/n: ");
+                            string a = Console.ReadLine();
+                            if (a == "y" || a == "n")
+                            {
+                                if (a == "y")
+                                    comp = true;
+                                else if (a == "n")
+                                    comp = false;
+                                bool proector = false;
+                                Console.Write("Имеется ли проектор? y/n: ");
+                                string b = Console.ReadLine();
+                                if (b == "y" || b == "n")
+                                {
+                                    if (b == "y")
+                                        proector = true;
+                                    else if (b == "n")
+                                        proector = false;
+                                    Auditoriya newAud = new Auditoriya(nomer, Convert.ToInt32(mesta), comp, proector);
+                                    auditoriya.Add(newAud);
+                                    Console.WriteLine("Аудитория добавлена\n");
+                                }
+                                else
+                                    Console.WriteLine("Неверное значение\n");
+
+                            }
+                            else
+                                Console.WriteLine("Неверное значение\n");
+
+                        }
+                        else
+                            Console.WriteLine("Неверное значение\n");
+                    }
+                    else
+                        Console.WriteLine("Аудитория с таким номером уже есть\n");
+                }
+                else
+                    Console.WriteLine("Неверное значение\n");
+            }
+            else
+                Console.WriteLine("База данных ещё не создана\n");
+        }
+
+        static public void PrintInf()
+        {
+            if (isCreated)
+            {
+                Console.Write("Введите номер аудитории: ");
+                string nomer = Console.ReadLine();
+                if (!String.IsNullOrEmpty(nomer) && IsCorrectNomer(nomer))
+                {
+                    if (ReturnAuditoriya(nomer) != null)
+                    {
+                        Auditoriya aud = ReturnAuditoriya(nomer);
+                        Console.WriteLine($"Номер аудитории: {aud.nomer}");
+                        Console.WriteLine($"Количество мест: {aud.mesta}");
+                        Console.WriteLine($"Наличие компьютеров: {(aud.comp ? "Есть" : "Нет")}");
+                        Console.WriteLine($"Наличие проектора: {(aud.proector ? "Есть" : "Нет")}\n");
+                    }
+                    else Console.WriteLine("Аудитории с таким номером нет\n");
+                }
+                else
+                    Console.WriteLine("Неверное значение\n");
+            }
+            else Console.WriteLine("База данных ещё не создана\n");
+        }
+
+        // Проверка номера аудитории
+        static public bool IsCorrectNomer(string nomer)
+        {
+            string[] first = {"0", "1", "2", "3", "4", "5", "6", "7"};
+            if (nomer.Length == 3 && first.Contains(Convert.ToString(nomer[0])) && CheckNumber(nomer) && !(nomer[1] == '0' && nomer[2] == '0'))
+                return true;
+            else 
+                return false;
+        }
+
+        // Проверка числа
+        static public bool CheckNumber(string number)
+        {
+            string[] correct = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+            foreach (char c in number)
+                if (!correct.Contains(Convert.ToString(c)))
+                    return false;
+            return true;
+        }
+
+        // Возвращает аудиторию по номеру
+        static public Auditoriya ReturnAuditoriya(string nomer)
+        {
+            foreach (Auditoriya aud in auditoriya)
+                if(aud.nomer == nomer)
+                    return aud;
+            return null;
+        }
     }
 }
