@@ -12,7 +12,7 @@ graf = [[-1, 7, -1, -1, 9, 2, -1, -1, -1, -1, -1, -1],
         [-1, -1, -1, -1, -1, -1, 4, 8, 6, 10, -1, 3],
         [-1, -1, -1, -1, -1, -1, -1, 5, 1, -1, 3, -1]]
 
-distances = [inf] * 12
+distances = [inf] * len(graf)
 a = int(input("Начальная вершина: "))
 b = int(input("Конечная вершина: "))
 distances[a-1] = 0
@@ -20,11 +20,11 @@ marked = set()
 
 while (b-1) not in marked:
     mn = inf
-    for i in range(12):
+    for i in range(len(graf)):
         if i not in marked and distances[i] < mn:
             mn = distances[i]
             u = i
-    for i in range(12):
+    for i in range(len(graf)):
         if graf[u][i] != -1 and i not in marked:
             distances[i] = min(distances[i], distances[u] + graf[u][i])
         marked.add(u)
