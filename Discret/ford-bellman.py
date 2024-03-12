@@ -16,12 +16,12 @@ graf = [[inf, 7, inf, inf, 9, 2, inf, inf, inf, inf, inf, inf],
 n = len(graf)
 a = int(input("Начальная вершина: "))
 
-l = [[inf] * n for i in range(n)]
-for i in range(n):
+l = [[inf] * (n+1) for i in range(n)]
+for i in range(n+1):
     for j in range(n):
         l[a-1][i] = 0
 
-for k in range(1, n):
+for k in range(1, n+1):
     for i in range(0, n):
         if i == a - 1:
             continue
@@ -31,7 +31,15 @@ for k in range(1, n):
                 mn = l[j][k-1] + graf[j][i]
         l[i][k] = mn
 
-answer = []
-for i in range(n):
-    answer.append(l[i][-1])
-print(answer)
+flag = True
+for i in l:
+    if i[-1] < i[-2]:
+        flag = False
+        break
+if flag:
+    answer = []
+    for i in range(n):
+        answer.append(l[i][-1])
+    print(answer)
+else:
+    print("Присутствует отрицательный цикл")
