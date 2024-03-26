@@ -32,3 +32,16 @@ for j in range(len(graf)):
 
 if flag:
     print(l)
+
+if flag:
+    for finish in range(len(graf)):
+        way = [finish+1]
+        v = finish
+        while start not in way:
+            for i in range(len(graf)):
+                if graf[i][v] != inf and l[v] == graf[i][v] + l[i]:
+                    way.append(i + 1)
+                    v = i
+        way.reverse()
+        print(f"Путь до вершины {finish+1}: {way}")
+
