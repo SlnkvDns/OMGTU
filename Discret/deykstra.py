@@ -17,6 +17,7 @@ a = int(input("Начальная вершина: "))
 b = int(input("Конечная вершина: "))
 distances[a-1] = 0
 marked = set()
+way = [b]
 
 while (b-1) not in marked:
     mn = inf
@@ -28,4 +29,13 @@ while (b-1) not in marked:
         if graf[u][i] != -1 and i not in marked:
             distances[i] = min(distances[i], distances[u] + graf[u][i])
         marked.add(u)
+
+v = b-1
+while (a) not in way:
+    for i in range(len(graf)):
+        if graf[i][v] != -1 and distances[v] == graf[i][v] + distances[i]:
+            way.append(i+1)
+            v = i
+way.reverse()
 print(distances[b-1])
+print(f"Путь: {way}")
