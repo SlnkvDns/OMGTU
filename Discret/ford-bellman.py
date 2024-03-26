@@ -1,5 +1,4 @@
-inf = float("+inf")
-
+inf = float("inf")
 graf = [[inf, 7, inf, inf, 9, 2, inf, inf, inf, inf, inf, inf],
         [7, inf, 5, 4, 8, 2, inf, inf, inf, inf, inf, inf],
         [inf, 5, inf, 2, 9, inf, inf, inf, inf, inf, inf, inf],
@@ -13,33 +12,23 @@ graf = [[inf, 7, inf, inf, 9, 2, inf, inf, inf, inf, inf, inf],
         [inf, inf, inf, inf, inf, inf, 4, 8, 6, 10, inf, 3],
         [inf, inf, inf, inf, inf, inf, inf, 5, 1, inf, 3, inf]]
 
-n = len(graf)
-a = int(input("Начальная вершина: "))
 
-l = [[inf] * (n+1) for i in range(n)]
-for i in range(n+1):
-    for j in range(n):
-        l[a-1][i] = 0
-
-for k in range(1, n+1):
-    for i in range(0, n):
-        if i == a - 1:
-            continue
-        mn = inf
-        for j in range(n):
-            if graf[j][i] != inf and l[j][k-1] + graf[j][i] < mn:
-                mn = l[j][k-1] + graf[j][i]
-        l[i][k] = mn
+start = int(input("Начальная вершина: "))
+l = [inf] * len(graf)
+l2 = []
+l[start-1] = 0
+for i in range(len(graf)-1):
+    for j in range(len(graf)):
+        for k in range(len(graf)):
+            if l[j] > graf[k][j] + l[k]:
+                l[j] = graf[k][j] + l[k]
 
 flag = True
-for i in l:
-    if i[-1] < i[-2]:
-        flag = False
-        break
+for j in range(len(graf)):
+    for k in range(len(graf)):
+        if l[j] > graf[k][j] + l[k]:
+            flag = False
+            print("Имеется отрицательный цикл")
+
 if flag:
-    answer = []
-    for i in range(n):
-        answer.append(l[i][-1])
-    print(answer)
-else:
-    print("Присутствует отрицательный цикл")
+    print(l)
